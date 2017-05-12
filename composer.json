@@ -1,0 +1,9 @@
+{
+    "name": "irma/simplesamlphp-module-authirma",
+    "description": "Simplesamlphp module for IRMA authentication.",
+    "type": "simplesamlphp-module",
+    "license": "BSD-3-Clause",
+    "require": {
+        "simplesamlphp/composer-module-installer": "~1.0"
+    }
+}
