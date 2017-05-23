@@ -1,0 +1,8 @@
+{
+	"header": {
+		"en": "Login with IRMA"
+	},
+	"intro": {
+		"en": "Some service requested authentication. To authenticate, follow the instructions on your IRMA app."
+	}
+}
