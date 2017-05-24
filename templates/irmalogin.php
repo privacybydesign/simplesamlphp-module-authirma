@@ -29,46 +29,22 @@ if ($this->data['errorcode'] !== NULL) {
 }
 ?>
 
-	<img style="float: right" src="<?php echo($this->data['logo_url']); ?>" alt="IRMA" />
+	<img style="float: right; max-width: 100px" src="<?php echo($this->data['logo_url']); ?>" alt="IRMA" />
 
+	<div id="irma_result"></div>
 
 	<h2 style=""><?php echo $this->t('{authirma:irma:header}'); ?></h2>
+	<p><?php echo $this->t('{authirma:irma:intro}'); ?></p>
+	<button id="irma_btn" class="btn btn-primary">Get SURFconext attributes</button>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-xs-12 col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
-				<h2>SURFconext verification</h2>
-				<button id="irma_btn" class="btn btn-primary">Get SURFconext attributes</button>
-
-				<div id="result_div" hidden>
-					<h3>Result</h3>
-					<h4 id="result_status"></h4>
-					<p>Raw JSON web token:</p>
-					<pre id="token-raw"></pre>
-
-					<p>Content of JSON web token:</p>
-					<pre id="token-content"></pre>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<form action="?" method="post" name="f">
-
-		<p><?php echo $this->t('{authirma:irma:intro}'); ?></p>
-	
-		<p><input id="irma_result" style="border: 1px solid #ccc; background: #eee; padding: .5em; font-size: medium; width: 70%; color: #aaa" type="submit" tabindex="2" name="irma_result" value="Proceed"/></p>
-
-
+	<form action="?" method="post" name="irma_result_form" id="irma_result_form">
+		<input type="hidden" id="jwt_result" name="jwt_result" value="" />
 <?php
 foreach ($this->data['stateparams'] as $name => $value) {
-	echo('<input type="hidden" name="' . htmlspecialchars($name) . '" value="' . htmlspecialchars($value) . '" />');
+		echo('<input type="hidden" name="' . htmlspecialchars($name) . '" value="' . htmlspecialchars($value) . '" />');
 }
 ?>
-        <input type="hidden" id="jwt_result" name="jwt_result" value="" />
-
 	</form>
 
 <?php
-
 $this->includeAtTemplateBase('includes/footer.php');
