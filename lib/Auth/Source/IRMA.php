@@ -1,5 +1,7 @@
 <?php
 
+use \Firebase\JWT\JWT;
+
 /**
  * This class implements IRMA authentication
  * using the IRMA API
@@ -23,7 +25,7 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
     /**
      * The client id/key for use with the Auth_Yubico PHP module.
      */
-    private $irma_dummy;
+    private $jwt_privatekeyfile;
 
     /**
      * Constructor for this authentication source.
@@ -38,11 +40,10 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
         assert('is_array($info)');
         assert('is_array($config)');
         parent::__construct($info, $config);
-        // config params: dummy
-        if (array_key_exists('dummy', $config)) {
-            $this->irma_dummy = $config['dummy'];
+        // config params
+        if (array_key_exists('jwt_privatekeyfile', $config)) {
+            $this->jwt_privatekeyfile = $config['jwt_privatekeyfile'];
         }
-
         return;
     }
 
@@ -128,11 +129,17 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
         assert('is_string($irma_credential)');
 //        require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/libextinc/IRMA.php'; // TODO
         $attributes = array();
-        $attributes['irma_dummy'] = array('test');
+
+        $pubkeyfile = "/Users/jodi/irma-idp/simplesamlphp/modules/authirma/apiserver-pk.pem"; // TODO config
+        $pubkey = openssl_pkey_get_public("file://$pubkeyfile");
+        // TODO: FALSE on error
 
         try {
             // validate IRMA credentials
-            $attributes['uid'] = array($irma_credential); // TODO
+            $decoded = (array) JWT::decode($irma_credential,$pubkey,array('RS256'));
+            error_log(print_r($decoded,true));
+            // TODO: check STATUS
+            $attributes = (array) $decoded['attributes'];
         } catch (Exception $e) {
             SimpleSAML\Logger::info('authirma:' . $this->authId . ': Validation error (IRMA credential ' . $irma_credential . ')');
             throw new SimpleSAML_Error_Error('IRMA_INVALIDCREDENTIALS', $e);
@@ -142,7 +149,7 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
     }
 
 
-/**
+    /**
      * Finish a failed authentication.
      *
      * This function can be overloaded by a child authentication
@@ -154,6 +161,8 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
 //        $state['authirma.error'] = "SOMEERROR";
 
         $config = SimpleSAML_Configuration::getInstance();
+        $attributes = SimpleSAML\Utils\Attributes::normalizeAttributesArray($config);
+
 
         $t = new SimpleSAML_XHTML_Template($config,
             'authirma:IRMAerror.php');  // TODO

@@ -2,8 +2,19 @@
     "name": "irma/simplesamlphp-module-authirma",
     "description": "Simplesamlphp module for IRMA authentication.",
     "type": "simplesamlphp-module",
-    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Sietse Ringers",
+            "email": "mail@sietseringers.net"
+        },
+        {
+            "name": "Joost van Dijk",
+            "email": "vandijk.joost@gmail.com"
+        }
+    ],
+    "license": "MIT",
     "require": {
-        "simplesamlphp/composer-module-installer": "~1.0"
+        "simplesamlphp/composer-module-installer": "~1.0",
+        "firebase/php-jwt": "^4.0"
     }
 }

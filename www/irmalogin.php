@@ -14,15 +14,18 @@ if (!array_key_exists('AuthState', $_REQUEST)) {
 }
 $authStateId = $_REQUEST['AuthState'];
 
-if (array_key_exists('irma_result', $_REQUEST)) {
-	$irma_result = $_REQUEST['irma_result'];
-} else {
-	$irma_result = '';
-}
+error_log(print_r($_REQUEST,true));
 
-if (!empty($irma_result)) {
+if (array_key_exists('jwt_result', $_REQUEST)) {
+	$jwt_result = $_REQUEST['jwt_result'];
+} else {
+	$jwt_result = '';
+}
+// todo: throw exceptin if missing?
+
+if (!empty($jwt_result)) {
 	// attempt to log in
-	$errorCode = sspmod_authirma_Auth_Source_IRMA::handleLogin($authStateId, $irma_result);
+	$errorCode = sspmod_authirma_Auth_Source_IRMA::handleLogin($authStateId, $jwt_result);
 } else {
 	$errorCode = NULL;
 }
@@ -33,5 +36,6 @@ $t->data['stateparams'] = array('AuthState' => $authStateId);
 $t->data['errorcode'] = $errorCode;
 $t->data['errorcodes'] = SimpleSAML\Error\Errorcodes::getAllErrorCodeMessages();
 $t->data['logo_url'] = SimpleSAML\Module::getModuleURL('authirma/resources/irma.png');
+$t->data['resources_url'] = SimpleSAML\Module::getModuleURL('authirma/resources');
 $t->show();
 exit();
