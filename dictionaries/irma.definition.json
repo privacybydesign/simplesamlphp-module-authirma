@@ -4,5 +4,17 @@
 	},
 	"intro": {
 		"en": "Some service requested authentication. To authenticate, follow the instructions on your IRMA app."
+	},
+	"title_error_invalid": {
+		"en": "IRMA attributes are invalid"
+	},
+	"descr_error_invalid": {
+		"en": "The received IRMA attributes are invalid."
+	},
+	"title_error_expired": {
+		"en": "IRMA attributes are expired"
+	},
+	"descr_error_expired": {
+		"en": "The received IRMA attributes are expired. Try again after refreshing your attributes."
 	}
 }

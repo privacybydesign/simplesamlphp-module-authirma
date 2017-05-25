@@ -101,8 +101,9 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
              * username/password - if it is, we pass that error up to the login form,
              * if not, we let the generic error handler deal with it.
              */
-            if ($e->getErrorCode() === 'IRMA_INVALIDCREDENTIALS') { // TODO
-                return 'IRMA_INVALIDCREDENTIALS';
+            if ($e->getErrorCode() === 'IRMA_INVALIDCREDENTIALS'
+                || $e->getErrorCode() === 'IRMA_EXPIREDCREDENTIALS') { // TODO
+                return $e->getErrorCode();
             }
             /* Some other error occurred. Rethrow exception and let the generic error
              * handler deal with it.
@@ -137,9 +138,13 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
         try {
             // validate IRMA credentials
             $decoded = (array) JWT::decode($irma_credential,$pubkey,array('RS256'));
-            error_log(print_r($decoded,true));
-            // TODO: check STATUS
+            if ($decoded["status"] === "EXPIRED")
+                throw new SimpleSAML_Error_Error('IRMA_EXPIREDCREDENTIALS');
+            elseif ($decoded["status"] !== "VALID")
+                throw new SimpleSAML_Error_Error('IRMA_INVALIDCREDENTIALS');
             $attributes = (array) $decoded['attributes'];
+        } catch (SimpleSAML_Error_Error $e) {
+            throw $e;
         } catch (Exception $e) {
             SimpleSAML\Logger::info('authirma:' . $this->authId . ': Validation error (IRMA credential ' . $irma_credential . ')');
             throw new SimpleSAML_Error_Error('IRMA_INVALIDCREDENTIALS', $e);

@@ -34,8 +34,14 @@ $globalConfig = SimpleSAML_Configuration::getInstance();
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'authirma:irmalogin.php');
 $t->data['stateparams'] = array('AuthState' => $authStateId);
 $t->data['errorcode'] = $errorCode;
-$t->data['errorcodes'] = SimpleSAML\Error\Errorcodes::getAllErrorCodeMessages();
 $t->data['logo_url'] = SimpleSAML\Module::getModuleURL('authirma/resources/irma.png');
 $t->data['resources_url'] = SimpleSAML\Module::getModuleURL('authirma/resources');
+
+$t->data['errorcodes'] = SimpleSAML\Error\Errorcodes::getAllErrorCodeMessages();
+$t->data['errorcodes']['title']['IRMA_INVALIDCREDENTIALS'] = '{authirma:irma:title_error_invalid}';
+$t->data['errorcodes']['title']['IRMA_EXPIREDCREDENTIALS'] = '{authirma:irma:title_error_expired}';
+$t->data['errorcodes']['descr']['IRMA_INVALIDCREDENTIALS'] = '{authirma:irma:descr_error_invalid}';
+$t->data['errorcodes']['descr']['IRMA_EXPIREDCREDENTIALS'] = '{authirma:irma:descr_error_expired}';
+
 $t->show();
 exit();
