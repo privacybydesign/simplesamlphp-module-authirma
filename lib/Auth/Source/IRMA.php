@@ -79,7 +79,7 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
      * exception.
      *
      * @param string $authStateId  The identifier of the authentication state.
-     * @param string $irma_result  TODO
+     * @param string $irma_result  JWT received from API server
      * @return string  Error code in the case of an error.
      */
     public static function handleLogin($authStateId, $irma_result) {
@@ -123,17 +123,16 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
      * it should throw an exception. If the error was due to invalid IRMA credentials,
      * a SimpleSAML_Error_Error('IRMA_INVALIDCREDENTIALS') should be thrown.
      *
-     * @param string $irma_result  The password the user wrote.
+     * @param string $irma_result  The JWT token from the IRMA API server.
      * @return array  Associative array with the users attributes.
      */
     protected function login($irma_credential) {
         assert('is_string($irma_credential)');
-//        require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/libextinc/IRMA.php'; // TODO
-        $attributes = array();
 
-        $pubkeyfile = "/Users/jodi/irma-idp/simplesamlphp/modules/authirma/apiserver-pk.pem"; // TODO config
+        $pubkeyfile = \SimpleSAML\Utils\Config::getCertPath("apiserver-pk.pem");
         $pubkey = openssl_pkey_get_public("file://$pubkeyfile");
-        // TODO: FALSE on error
+        if( !$pubkey )
+            throw new SimpleSAML_Error_Error('INVALIDCERT'); //  TODO irma-specific error here
 
         try {
             // validate IRMA credentials
@@ -166,7 +165,6 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
 //        $state['authirma.error'] = "SOMEERROR";
 
         $config = SimpleSAML_Configuration::getInstance();
-        $attributes = SimpleSAML\Utils\Attributes::normalizeAttributesArray($config);
 
 
         $t = new SimpleSAML_XHTML_Template($config,

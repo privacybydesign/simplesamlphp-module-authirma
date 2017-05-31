@@ -14,14 +14,11 @@ if (!array_key_exists('AuthState', $_REQUEST)) {
 }
 $authStateId = $_REQUEST['AuthState'];
 
-error_log(print_r($_REQUEST,true));
-
 if (array_key_exists('jwt_result', $_REQUEST)) {
 	$jwt_result = $_REQUEST['jwt_result'];
 } else {
 	$jwt_result = '';
 }
-// todo: throw exceptin if missing?
 
 if (!empty($jwt_result)) {
 	// attempt to log in
