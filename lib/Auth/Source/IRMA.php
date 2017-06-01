@@ -26,6 +26,9 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
      * The client id/key for use with the Auth_Yubico PHP module.
      */
     private $jwt_privatekeyfile;
+    private $issuer_id;
+    private $issuer_displayname;
+    private $requested_attributes;
 
     /**
      * Constructor for this authentication source.
@@ -43,6 +46,15 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
         // config params
         if (array_key_exists('jwt_privatekeyfile', $config)) {
             $this->jwt_privatekeyfile = $config['jwt_privatekeyfile'];
+        }
+        if (array_key_exists('issuer_id', $config)) {
+            $this->issuer_id = $config['issuer_id'];
+        }
+        if (array_key_exists('issuer_displayname', $config)) {
+            $this->issuer_displayname = $config['_displayname'];
+        }
+        if (array_key_exists('requested_attributes', $config)) {
+            $this->requested_attributes = $config['requested_attributes'];
         }
         return;
     }
