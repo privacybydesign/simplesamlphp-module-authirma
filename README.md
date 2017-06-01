@@ -53,7 +53,7 @@ Edit `config/config.php` to change the following:
 
 	'baseurlpath' => '',
 
-Edit `config/authsources.php` and add a authentication source names `irma` of type `authirma:IRMA`. See `docs/authirma`.
+Edit `config/authsources.php` and add an authentication source named `irma` of type `authirma:IRMA`. See `docs/authirma`.
 
 Create a directory for storing certificates and keys:
 
