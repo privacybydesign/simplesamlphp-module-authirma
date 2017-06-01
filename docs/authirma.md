@@ -1,7 +1,7 @@
 authirma module
 ================
 
-The authirma module provides support for logging in using IRMA 
+The authirma module provides support for logging in using IRMA
 (https://www.irmacard.org/irmaphone/) through a simplesamlphp authentication module:
 `authirma:IRMA`
 
@@ -17,8 +17,9 @@ For example:
     'irma' => array(
         'authirma:IRMA',
         'jwt_privatekeyfile' => 'surfnet-idp-sk.pem',
-        "issuer_id" => "my_issuer_id", 
-        "issuer_displayname" => "my IRMA issuer", 
+        'jwt_apiserver_publickeyfile' => 'apiserver-pk.pem',
+        "issuer_id" => "my_issuer_id",
+        "issuer_displayname" => "my IRMA issuer",
         "requested_attributes" => [
                     [ "label" => "Institute", "attributes" => ["pbdf.pbdf.surfnet.institute"] ],
                     [ "label" => "Type", "attributes" => ["pbdf.pbdf.surfnet.type"] ],
@@ -29,4 +30,3 @@ For example:
                     [ "label" => "Email address", "attributes" => ["pbdf.pbdf.surfnet.email"] ],
                 ]
     ),
-
