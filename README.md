@@ -33,3 +33,36 @@ Install using composer:
 # Configuration
 
 See docs `/docs/authirma.md` for configuration instructions.
+
+# Quickstart
+
+Install simplesamlphp
+
+	git clone https://github.com/simplesamlphp/simplesamlphp.git
+	cd simplesamlphp/
+
+Install the IRMA authentication module
+
+	composer require irma/simplesamlphp-module-authirma
+
+Copy sample configuration files
+
+	cp config-templates/config.php config-templates/authsources.php config 
+
+Edit `config/config.php` to change the following:
+
+	'baseurlpath' => '',
+
+Edit `config/authsources.php` and add a authentication source names `irma` of type `authirma:IRMA`. See `docs/authirma`.
+
+Create a directory for storing certificates and keys:
+
+	mkdir -p cert
+
+Put the private key for signing JWT requests and the certificate with the public key of the API server in the `cert` directory.
+
+Start a PHP web server:
+
+	php -S 0:8080 -t www 
+	
+Point your browser to http://localhost:8080/
