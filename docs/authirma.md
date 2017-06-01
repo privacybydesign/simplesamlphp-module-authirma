@@ -16,6 +16,8 @@ For example:
 
     'irma' => array(
         'authirma:IRMA',
+        'irma_api_server' => 'https://example.com',
+        'irma_web_server' => 'https://example.com',
         'jwt_privatekeyfile' => 'surfnet-idp-sk.pem',
         'jwt_apiserver_publickeyfile' => 'apiserver-pk.pem',
         "issuer_id" => "my_issuer_id",

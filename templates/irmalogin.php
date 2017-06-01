@@ -4,15 +4,15 @@ $this->data['header'] = $this->t('{authirma:irma:header}');
 $this->includeAtTemplateBase('includes/header.php');
 
 ?>
-	<meta name="irma-web-server" value="https://privacybydesign.foundation/tomcat/irma_api_server/server/">
-	<meta name="irma-api-server" value="https://irma.surfconext.nl/irma_api_server/api/v2/">
-
+	<meta name="irma-web-server" value="<?php echo $this->data['irma_web_server'] ?>/server/">
+	<meta name="irma-api-server" value="<?php echo $this->data['irma_api_server'] ?>/irma_api_server/api/v2/">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link href="https://privacybydesign.foundation/tomcat/irma_api_server/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
-	<script type="text/javascript" src="https://privacybydesign.foundation/tomcat/irma_api_server/bower_components/jquery/dist/jquery.min.js"></script>
-	<script type="text/javascript" src="https://privacybydesign.foundation/tomcat/irma_api_server/bower_components/jwt-decode/build/jwt-decode.js"></script>
-	<script type="text/javascript" src="https://privacybydesign.foundation/tomcat/irma_api_server/client/irma.js"></script>
+	<link href="<?php echo $this->data['irma_web_server'] ?>/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<script type="text/javascript" src="<?php echo $this->data['irma_web_server'] ?>/bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="<?php echo $this->data['irma_web_server'] ?>/bower_components/jwt-decode/build/jwt-decode.js"></script>
+	<script type="text/javascript" src="<?php echo $this->data['irma_web_server'] ?>/client/irma.js"></script>
 	<script type="text/javascript">
 	var verification_jwt = "<?php echo $this->data['verification_jwt'] ?>";
 	</script>

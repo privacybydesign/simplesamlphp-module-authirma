@@ -30,6 +30,8 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
     public $issuer_id;
     public $issuer_displayname;
     public $requested_attributes;
+    public $irma_api_server;
+    public $irma_web_server;
 
     /**
      * Constructor for this authentication source.
@@ -59,6 +61,12 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
         }
         if (array_key_exists('requested_attributes', $config)) {
             $this->requested_attributes = $config['requested_attributes'];
+        }
+        if (array_key_exists('irma_api_server', $config)) {
+            $this->irma_api_server = $config['irma_api_server'];
+        }
+        if (array_key_exists('irma_web_server', $config)) {
+            $this->irma_web_server = $config['irma_web_server'];
         }
         return;
     }

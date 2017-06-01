@@ -17,17 +17,9 @@ function get_jwt_key() {
 	if ($pk === false)
 		throw new Exception("Failed to load signing key");
 	return $pk;
- }
+}
 
-function get_jwt() {
-	$authStateId = $_REQUEST['AuthState'];
-	$state = SimpleSAML_Auth_State::loadState($authStateId, sspmod_authirma_Auth_Source_IRMA::STAGEID);
-	assert('array_key_exists(sspmod_authirma_Auth_Source_IRMA::AUTHID, $state)');
-	$source = SimpleSAML_Auth_Source::getById($state[sspmod_authirma_Auth_Source_IRMA::AUTHID]);
-	if ($source === NULL) {
-		throw new Exception('Could not find authentication source with id ' . $state[sspmod_authirma_Auth_Source_IRMA::AUTHID]);
-	}
-
+function get_jwt($source) {
 	$sprequest = [
 		"sub" => "verification_request",
 		"iss" => $source->issuer_displayname,
@@ -46,6 +38,13 @@ if (!array_key_exists('AuthState', $_REQUEST)) {
 	throw new SimpleSAML_Error_BadRequest('Missing AuthState parameter.');
 }
 $authStateId = $_REQUEST['AuthState'];
+
+$state = SimpleSAML_Auth_State::loadState($authStateId, sspmod_authirma_Auth_Source_IRMA::STAGEID);
+assert('array_key_exists(sspmod_authirma_Auth_Source_IRMA::AUTHID, $state)');
+$source = SimpleSAML_Auth_Source::getById($state[sspmod_authirma_Auth_Source_IRMA::AUTHID]);
+if ($source === NULL) {
+	throw new Exception('Could not find authentication source with id ' . $state[sspmod_authirma_Auth_Source_IRMA::AUTHID]);
+}
 
 if (array_key_exists('jwt_result', $_REQUEST)) {
 	$jwt_result = $_REQUEST['jwt_result'];
@@ -66,7 +65,9 @@ $t->data['stateparams'] = array('AuthState' => $authStateId);
 $t->data['errorcode'] = $errorCode;
 $t->data['logo_url'] = SimpleSAML\Module::getModuleURL('authirma/resources/irma.png');
 $t->data['resources_url'] = SimpleSAML\Module::getModuleURL('authirma/resources');
-$t->data['verification_jwt'] = get_jwt();
+$t->data['verification_jwt'] = get_jwt($source);
+$t->data['irma_api_server'] = $source->irma_api_server;
+$t->data['irma_web_server'] = $source->irma_web_server;
 
 $t->data['errorcodes'] = SimpleSAML\Error\Errorcodes::getAllErrorCodeMessages();
 $t->data['errorcodes']['title']['IRMA_INVALIDCREDENTIALS'] = '{authirma:irma:title_error_invalid}';
