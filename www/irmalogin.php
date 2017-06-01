@@ -68,6 +68,8 @@ $t->data['errorcode'] = $errorCode;
 $t->data['logo_url'] = SimpleSAML\Module::getModuleURL('authirma/resources/irma.png');
 $t->data['resources_url'] = SimpleSAML\Module::getModuleURL('authirma/resources');
 
+if (!isset($t->data['head']))
+	$t->data['head'] = '';
 $t->data['head'] .= <<<IRMAHEADERS
 <meta name="irma-web-server" value="{$source->irma_web_server}/server/">
 <meta name="irma-api-server" value="{$source->irma_api_server}/irma_api_server/api/v2/">
