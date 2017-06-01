@@ -7,7 +7,7 @@ use \Firebase\JWT\JWT;
  * using the IRMA API
  *
  * @author Joost van Dijk <vandijk.joost@gmail.com>
- * @author Sietse Ringers <>
+ * @author Sietse Ringers <mail@sietseringers.ne>
  * @package SimpleSAMLphp
  */
 class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
@@ -25,10 +25,11 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
     /**
      * The client id/key for use with the Auth_Yubico PHP module.
      */
-    private $jwt_privatekeyfile;
-    private $issuer_id;
-    private $issuer_displayname;
-    private $requested_attributes;
+    public $jwt_privatekeyfile;
+    public $jwt_apiserver_publickeyfile;
+    public $issuer_id;
+    public $issuer_displayname;
+    public $requested_attributes;
 
     /**
      * Constructor for this authentication source.
@@ -46,6 +47,9 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
         // config params
         if (array_key_exists('jwt_privatekeyfile', $config)) {
             $this->jwt_privatekeyfile = $config['jwt_privatekeyfile'];
+        }
+        if (array_key_exists('jwt_apiserver_publickeyfile', $config)) {
+            $this->jwt_apiserver_publickeyfile = $config['jwt_apiserver_publickeyfile'];
         }
         if (array_key_exists('issuer_id', $config)) {
             $this->issuer_id = $config['issuer_id'];
@@ -141,7 +145,7 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
     protected function login($irma_credential) {
         assert('is_string($irma_credential)');
 
-        $pubkeyfile = \SimpleSAML\Utils\Config::getCertPath("apiserver-pk.pem");
+        $pubkeyfile = \SimpleSAML\Utils\Config::getCertPath($this->jwt_apiserver_publickeyfile);
         $pubkey = openssl_pkey_get_public("file://$pubkeyfile");
         if( !$pubkey )
             throw new SimpleSAML_Error_Error('INVALIDCERT'); //  TODO irma-specific error here

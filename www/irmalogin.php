@@ -20,27 +20,26 @@ function get_jwt_key() {
  }
 
 function get_jwt() {
-	$pk = get_jwt_key();
+	$authStateId = $_REQUEST['AuthState'];
+	$state = SimpleSAML_Auth_State::loadState($authStateId, sspmod_authirma_Auth_Source_IRMA::STAGEID);
+	assert('array_key_exists(sspmod_authirma_Auth_Source_IRMA::AUTHID, $state)');
+	$source = SimpleSAML_Auth_Source::getById($state[sspmod_authirma_Auth_Source_IRMA::AUTHID]);
+	if ($source === NULL) {
+		throw new Exception('Could not find authentication source with id ' . $state[sspmod_authirma_Auth_Source_IRMA::AUTHID]);
+	}
+
 	$sprequest = [
 		"sub" => "verification_request",
-		"iss" => "SURFconext",
+		"iss" => $source->issuer_displayname,
 		"iat" => time(),
 		"sprequest" => [
 			"validity" => 60,
 			"request" => [
-				"content" => [
-					[ "label" => "Institute", "attributes" => ["pbdf.pbdf.surfnet.institute"] ],
-					[ "label" => "Type", "attributes" => ["pbdf.pbdf.surfnet.type"] ],
-					[ "label" => "ID", "attributes" => ["pbdf.pbdf.surfnet.id"] ],
-					[ "label" => "Full name", "attributes" => ["pbdf.pbdf.surfnet.fullname"] ],
-					[ "label" => "Given name", "attributes" => ["pbdf.pbdf.surfnet.firstname"] ],
-					[ "label" => "Family name", "attributes" => ["pbdf.pbdf.surfnet.familyname"] ],
-					[ "label" => "Email address", "attributes" => ["pbdf.pbdf.surfnet.email"] ],
-				]
+				"content" => $source->requested_attributes
 			]
 		]
 	];
-	return JWT::encode($sprequest, $pk, "RS256", "surfnet_idp");
+	return JWT::encode($sprequest, get_jwt_key(), "RS256", $source->issuer_id);
 }
 
 if (!array_key_exists('AuthState', $_REQUEST)) {
