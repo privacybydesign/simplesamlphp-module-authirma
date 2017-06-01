@@ -11,8 +11,8 @@
 
 use \Firebase\JWT\JWT;
 
-function get_jwt_key() {
-	$filename = \SimpleSAML\Utils\Config::getCertPath("irma-idp-sk.pem");
+function get_jwt_key($source) {
+	$filename = \SimpleSAML\Utils\Config::getCertPath($source->jwt_privatekeyfile);
 	$pk = openssl_pkey_get_private("file://$filename");
 	if ($pk === false)
 		throw new Exception("Failed to load signing key");
@@ -31,7 +31,7 @@ function get_jwt($source) {
 			]
 		]
 	];
-	return JWT::encode($sprequest, get_jwt_key(), "RS256", $source->issuer_id);
+	return JWT::encode($sprequest, get_jwt_key($source), "RS256", $source->issuer_id);
 }
 
 if (!array_key_exists('AuthState', $_REQUEST)) {
