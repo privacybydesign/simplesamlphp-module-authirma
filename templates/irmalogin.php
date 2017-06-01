@@ -13,6 +13,9 @@ $this->includeAtTemplateBase('includes/header.php');
 	<script type="text/javascript" src="https://privacybydesign.foundation/tomcat/irma_api_server/bower_components/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="https://privacybydesign.foundation/tomcat/irma_api_server/bower_components/jwt-decode/build/jwt-decode.js"></script>
 	<script type="text/javascript" src="https://privacybydesign.foundation/tomcat/irma_api_server/client/irma.js"></script>
+	<script type="text/javascript">
+	var verification_jwt = "<?php echo $this->data['verification_jwt'] ?>";
+	</script>
 	<script type="text/javascript" src="<?php echo($this->data['resources_url']); ?>/verify.js"></script>
 
 <?php

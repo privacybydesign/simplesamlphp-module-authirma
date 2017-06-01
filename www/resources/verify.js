@@ -17,8 +17,6 @@ $(function() {
 
     $("#irma_btn").on("click", function() {
         console.log("Button clicked");
-        $.get("jwt.php", function(jwt) {
-            IRMA.verify(jwt, success_fun, cancel_fun, error_fun);
-        });
+        IRMA.verify(verification_jwt, success_fun, cancel_fun, error_fun);
     });
 });
