@@ -1,6 +1,5 @@
 <?php
 $this->data['header'] = $this->t('{authirma:irma:header}');
-$this->data['autofocus'] = 'irma_result'; // todo
 
 $this->includeAtTemplateBase('includes/header.php');
 
@@ -31,7 +30,7 @@ if ($this->data['errorcode'] !== NULL) {
 
 	<img style="float: right; max-width: 100px" src="<?php echo($this->data['logo_url']); ?>" alt="IRMA" />
 
-	<div id="irma_result"></div>
+	<div id="irma_msg"></div>
 
 	<h2 style=""><?php echo $this->t('{authirma:irma:header}'); ?></h2>
 	<p><?php echo $this->t('{authirma:irma:intro}'); ?></p>
