@@ -25,6 +25,11 @@ Download the [latest version](https://github.com/credentials/simplesamlphp-modul
 Install the module in the `modules/` directory of your simpleSAMLphp setup (or symlink it if you want to keep the directory structure clean).
 The module is enabled by default: no need for a 'touch enable' inside the module directory.
 
+Note that authirma depends on [php=jwt](https://github.com/firebase/php-jwt) for encoding and decoding JSON Web Tokens (JWT).
+Install using composer:
+
+	composer require firebase/php-jwt
+
 # Configuration
 
 See docs `/docs/authirma.md` for configuration instructions.
