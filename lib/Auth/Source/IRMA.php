@@ -51,7 +51,7 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
             $this->issuer_id = $config['issuer_id'];
         }
         if (array_key_exists('issuer_displayname', $config)) {
-            $this->issuer_displayname = $config['_displayname'];
+            $this->issuer_displayname = $config['issuer_displayname'];
         }
         if (array_key_exists('requested_attributes', $config)) {
             $this->requested_attributes = $config['requested_attributes'];
