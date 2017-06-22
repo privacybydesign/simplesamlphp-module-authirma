@@ -81,7 +81,7 @@ $t->data['head'] .= <<<IRMAHEADERS
 <script type="text/javascript"> var verification_jwt = "$verification_jwt"; </script>
 IRMAHEADERS;
 
-$t->data['errorcodes'] = SimpleSAML\Error\Errorcodes::getAllErrorCodeMessages();
+$t->data['errorcodes'] = SimpleSAML\Error\ErrorCodes::getAllErrorCodeMessages();
 $t->data['errorcodes']['title']['IRMA_INVALIDCREDENTIALS'] = '{authirma:irma:title_error_invalid}';
 $t->data['errorcodes']['title']['IRMA_EXPIREDCREDENTIALS'] = '{authirma:irma:title_error_expired}';
 $t->data['errorcodes']['descr']['IRMA_INVALIDCREDENTIALS'] = '{authirma:irma:descr_error_invalid}';
