@@ -9,31 +9,6 @@
  * @package SimpleSAMLphp
 **/
 
-use \Firebase\JWT\JWT;
-
-function get_jwt_key($source) {
-	$filename = \SimpleSAML\Utils\Config::getCertPath($source->jwt_privatekeyfile);
-	$pk = openssl_pkey_get_private("file://$filename");
-	if ($pk === false)
-		throw new Exception("Failed to load signing key");
-	return $pk;
-}
-
-function get_jwt($source) {
-	$sprequest = [
-		"sub" => "verification_request",
-		"iss" => $source->issuer_displayname,
-		"iat" => time(),
-		"sprequest" => [
-			"validity" => 60,
-			"request" => [
-				"content" => $source->requested_attributes
-			]
-		]
-	];
-	return JWT::encode($sprequest, get_jwt_key($source), "RS256", $source->issuer_id);
-}
-
 if (!array_key_exists('AuthState', $_REQUEST)) {
 	throw new SimpleSAML_Error_BadRequest('Missing AuthState parameter.');
 }
@@ -59,8 +34,6 @@ if (!empty($jwt_result)) {
 	$errorCode = NULL;
 }
 
-$verification_jwt = get_jwt($source);
-
 $globalConfig = SimpleSAML_Configuration::getInstance();
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'authirma:irmalogin.php');
 $t->data['stateparams'] = array('AuthState' => $authStateId);
@@ -71,21 +44,21 @@ $t->data['resources_url'] = SimpleSAML\Module::getModuleURL('authirma/resources'
 if (!isset($t->data['head']))
 	$t->data['head'] = '';
 $t->data['head'] .= <<<IRMAHEADERS
-<meta name="irma-web-server" value="{$source->irma_web_server}/server/">
-<meta name="irma-api-server" value="{$source->irma_api_server}/irma_api_server/api/v2/">
-<link href="{$source->irma_web_server}/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-<script type="text/javascript" src="{$source->irma_web_server}/bower_components/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="{$source->irma_web_server}/bower_components/jwt-decode/build/jwt-decode.js"></script>
-<script type="text/javascript" src="{$source->irma_web_server}/client/irma.js"></script>
+<meta name="irma-api-server" value="{$source->irma_api_server}">
+<script type="text/javascript" src="{$t->data['resources_url']}/jquery-3.4.0.min.js"></script>
+<script type="text/javascript" src="{$t->data['resources_url']}/irma.js"></script>
 <script type="text/javascript" src="{$t->data['resources_url']}/verify.js"></script>
-<script type="text/javascript"> var verification_jwt = "$verification_jwt"; </script>
+<script type="text/javascript"> 
+var irma_api_server = "{$source->irma_api_server}"; 
+var authStateId = "$authStateId"; 
+</script>
 IRMAHEADERS;
 
 $t->data['errorcodes'] = SimpleSAML\Error\ErrorCodes::getAllErrorCodeMessages();
-$t->data['errorcodes']['title']['IRMA_INVALIDCREDENTIALS'] = '{authirma:irma:title_error_invalid}';
-$t->data['errorcodes']['title']['IRMA_EXPIREDCREDENTIALS'] = '{authirma:irma:title_error_expired}';
-$t->data['errorcodes']['descr']['IRMA_INVALIDCREDENTIALS'] = '{authirma:irma:descr_error_invalid}';
-$t->data['errorcodes']['descr']['IRMA_EXPIREDCREDENTIALS'] = '{authirma:irma:descr_error_expired}';
+$t->data['errorcodes']['title']['RESPONSESTATUSNOSUCCESS'] = '{authirma:irma:title_error_invalid}';
+$t->data['errorcodes']['title']['USERABORTED'] = '{authirma:irma:title_error_expired}';
+$t->data['errorcodes']['descr']['RESPONSESTATUSNOSUCCESS'] = '{authirma:irma:descr_error_invalid}';
+$t->data['errorcodes']['descr']['USERABORTED'] = '{authirma:irma:descr_error_expired}';
 
 $t->show();
 exit();
