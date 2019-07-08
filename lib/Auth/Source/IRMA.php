@@ -31,7 +31,6 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
     public $issuer_displayname;
     public $requested_attributes;
     public $irma_api_server;
-    public $irma_web_server;
 
     /**
      * Constructor for this authentication source.
@@ -64,9 +63,6 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
         }
         if (array_key_exists('irma_api_server', $config)) {
             $this->irma_api_server = $config['irma_api_server'];
-        }
-        if (array_key_exists('irma_web_server', $config)) {
-            $this->irma_web_server = $config['irma_web_server'];
         }
         return;
     }
@@ -125,8 +121,8 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
              * username/password - if it is, we pass that error up to the login form,
              * if not, we let the generic error handler deal with it.
              */
-            if ($e->getErrorCode() === 'IRMA_INVALIDCREDENTIALS'
-                || $e->getErrorCode() === 'IRMA_EXPIREDCREDENTIALS') { // TODO
+            if ($e->getErrorCode() === 'RESPONSESTATUSNOSUCCESS'
+                || $e->getErrorCode() === 'USERABORTED') { // TODO
                 return $e->getErrorCode();
             }
             /* Some other error occurred. Rethrow exception and let the generic error
@@ -145,7 +141,7 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
      *
      * On a successful login, this function should return the users attributes. On failure,
      * it should throw an exception. If the error was due to invalid IRMA credentials,
-     * a SimpleSAML_Error_Error('IRMA_INVALIDCREDENTIALS') should be thrown.
+     * a SimpleSAML_Error_Error('RESPONSESTATUSNOSUCCESS') should be thrown.
      *
      * @param string $irma_result  The JWT token from the IRMA API server.
      * @return array  Associative array with the users attributes.
@@ -162,15 +158,15 @@ class sspmod_authirma_Auth_Source_IRMA extends SimpleSAML_Auth_Source {
             // validate IRMA credentials
             $decoded = (array) JWT::decode($irma_credential,$pubkey,array('RS256'));
             if ($decoded["status"] === "EXPIRED")
-                throw new SimpleSAML_Error_Error('IRMA_EXPIREDCREDENTIALS');
+                throw new SimpleSAML_Error_Error('USERABORTED');
             elseif ($decoded["status"] !== "VALID")
-                throw new SimpleSAML_Error_Error('IRMA_INVALIDCREDENTIALS');
+                throw new SimpleSAML_Error_Error('RESPONSESTATUSNOSUCCESS');
             $attributes = (array) $decoded['attributes'];
         } catch (SimpleSAML_Error_Error $e) {
             throw $e;
         } catch (Exception $e) {
             SimpleSAML\Logger::info('authirma:' . $this->authId . ': Validation error (IRMA credential ' . $irma_credential . ')');
-            throw new SimpleSAML_Error_Error('IRMA_INVALIDCREDENTIALS', $e);
+            throw new SimpleSAML_Error_Error('UNHANDLEDEXCEPTION', $e);
         }
         SimpleSAML\Logger::info('authirma:' . $this->authId . ': IRMA credential ' . $irma_credential . ' validated successfully');
         return $attributes;
