@@ -2,7 +2,7 @@ authirma module
 ================
 
 The authirma module provides support for logging in using IRMA
-(https://www.irmacard.org/irmaphone/) through a simplesamlphp authentication module:
+(https://irma.app/) through a simplesamlphp authentication module:
 `authirma:IRMA`
 
 
